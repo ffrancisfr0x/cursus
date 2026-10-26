@@ -49,6 +49,25 @@ public class OfertaService {
         return resultado;
     }
 
+    public Oferta anadir(String titulo, String empresa, String estado, String fecha,
+                         String enlace, String notas) throws IOException {
+
+        comprobarTexto("titulo", titulo);
+        comprobarTexto("empresa", empresa);
+
+        List<Oferta> ofertas = ofertaDAO.leer();
+
+        Oferta nueva = new Oferta(siguienteId(ofertas), titulo, empresa, Estado.desdeTexto(estado),
+                fecha == null ? LocalDate.now() : OfertaDAO.convertirFecha(fecha), enlace == null ? "" :
+                enlace, notas == null ? "" : notas);
+
+        ofertas.add(nueva);
+        ofertaDAO.guardar(ofertas);
+
+        return nueva;
+    }
+
+
     private int siguienteId(List<Oferta> ofertas) {
         int maximo = 0;
         for (Oferta o : ofertas) {
