@@ -57,6 +57,15 @@ public class OfertaService {
         return maximo + 1;
     }
 
+    private boolean existeId(List<Oferta> ofertas, int id) {
+        for (Oferta o : ofertas) {
+            if (o.getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void comprobarTexto(String campo, String valor) {
         if (valor == null || valor.isBlank()) {
             throw new IllegalArgumentException("Falta el argumento --" + campo + ".");
