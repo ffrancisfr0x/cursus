@@ -30,4 +30,10 @@ public class OfertaDAO {
         }
         return ofertas;
     }
+
+    public static boolean esCabeceraOVacia(String linea) {
+        return linea.isBlank() || linea.toLowerCase().startsWith("id;");
+    }
+
+
 }
