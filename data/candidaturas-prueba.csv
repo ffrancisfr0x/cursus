@@ -1,0 +1,16 @@
+id;titulo;empresa;estado;fechaPostulacion;enlace;notas
+1;Desarrollador Frontend;TechCorp;pendiente;15/08/2026;https://techcorp.com/jobs/1;En espera de respuesta inicial
+2;Ingeniero de Software;Innovatech;pendiente;20/08/2026;https://innovatech.io/jobs/2;CV enviado por portal web
+3;Analista de Datos;DataSoft;pendiente;05/09/2026;https://datasoft.es/empleo/3;Pendiente de llamada del reclutador
+4;Desarrollador Backend;Global Solutions;pendiente;12/09/2026;https://globalsolutions.com/careers/4;Revisando la oferta salarial
+5;Full Stack Developer;TechCorp;entrevista;18/08/2026;https://techcorp.com/jobs/5;Segunda ronda técnica superada
+6;DevOps Engineer;Innovatech;entrevista;25/08/2026;https://innovatech.io/jobs/6;Entrevista con el CTO programada
+7;Arquitecto Cloud;DataSoft;entrevista;10/09/2026;https://datasoft.es/empleo/7;Primera entrevista de encaje cultural
+8;Product Manager;Global Solutions;aceptado;01/10/2026;https://globalsolutions.com/careers/8;Oferta recibida pendiente de firma
+9;QA Engineer;TechCorp;rechazado;02/08/2026;https://techcorp.com/jobs/9;Buscaban más experiencia en automatización
+10;Frontend Senior;Innovatech;rechazado;10/08/2026;https://innovatech.io/jobs/10;Proceso cerrado con otro candidato
+11;Data Scientist;DataSoft;rechazado;22/08/2026;https://datasoft.es/empleo/11;No avanzaron tras la entrevista técnica
+12;Cybersecurity Analyst;Global Solutions;rechazado;03/09/2026;https://globalsolutions.com/careers/12;Puesto cubierto internamente
+13;Desarrollador Java Junior;Indra;entrevista;15/10/2026;https://indra.es/empleo/13;Repasar Spring Boot y JUnit
+14;UX/UI Designer;Innovatech;aceptado;15/09/2026;https://innovatech.io/jobs/14;Contrato recibido y firmado
+15;Business Analyst;DataSoft;aceptado;20/09/2026;https://datasoft.es/empleo/15;Incorporación el próximo mes
