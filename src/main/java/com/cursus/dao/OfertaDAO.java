@@ -40,7 +40,7 @@ public class OfertaDAO {
 
     public void guardar(List<Oferta> ofertas) throws IOException {
         File carpeta = archivo.getParentFile();
-        if (!carpeta.exists()) {
+        if (carpeta != null) {
             carpeta.mkdirs();
         }
 
@@ -59,7 +59,7 @@ public class OfertaDAO {
     public static Oferta convertirLinea(String linea) {
         String[] partes = linea.split(";", -1);
 
-        if (partes.length < 5) {
+        if (partes.length < 7) {
             throw new IllegalArgumentException("Faltan campos en la línea: " + linea);
         }
 
