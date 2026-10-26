@@ -3,10 +3,7 @@ package com.cursus.dao;
 import com.cursus.model.Estado;
 import com.cursus.model.Oferta;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.DateTimeException;
@@ -40,6 +37,24 @@ public class OfertaDAO {
             }
         }
         return ofertas;
+    }
+
+    public void guardar(List<Oferta> ofertas) throws IOException {
+        File carpeta = archivo.getParentFile();
+        if (!carpeta.exists()) {
+            carpeta.mkdirs();
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, StandardCharsets.UTF_8))) {
+            writer.write(CABECERA);
+            writer.newLine();
+
+            for (Oferta oferta : ofertas) {
+                writer.write(oferta.getId() + ";" + oferta.getTitulo() + ";" + oferta.getEmpresa() + ";" + oferta.getEstado() + ";"
+                        + oferta.getFechaPostulacion().format(FORMATO_FECHA) + ";" + oferta.getEnlace() + ";" + oferta.getNotas());
+                writer.newLine();
+            }
+        }
     }
 
     public static Oferta convertirLinea(String linea) {
