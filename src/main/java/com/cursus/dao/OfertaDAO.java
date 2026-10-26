@@ -5,6 +5,7 @@ import com.cursus.model.Oferta;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
@@ -39,7 +40,15 @@ public class OfertaDAO {
         try {
             return Integer.parseInt(linea.trim());
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("\"El ID debe ser un número: " + linea.trim(), e);
+            throw new IllegalArgumentException("El ID debe ser un número: " + linea.trim(), e);
+        }
+    }
+
+    public static LocalDate convertirFecha(String linea) {
+        try {
+            return LocalDate.parse(linea.trim(), FORMATO_FECHA);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("La fecha debe tener el formato dd/MM/yyyy: " + linea.trim(), e);
         }
     }
 }
