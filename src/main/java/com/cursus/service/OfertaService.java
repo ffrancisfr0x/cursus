@@ -47,4 +47,14 @@ public class OfertaService {
 
         return resultado;
     }
+
+    private void comprobarTexto(String campo, String valor) {
+        if (valor == null || valor.isBlank()) {
+            throw new IllegalArgumentException("Falta el argumento --" + campo + ".");
+        }
+        if (valor.contains(";")) {
+            throw new IllegalArgumentException("El campo " + campo + " no puede contener \";\".");
+        }
+    }
+
 }
