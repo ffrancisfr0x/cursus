@@ -3,6 +3,7 @@ package com.cursus.dao;
 import com.cursus.model.Estado;
 import com.cursus.model.Oferta;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -29,9 +30,12 @@ public class OfertaDAO {
         if (!Files.exists(this.archivo)) {
             return ofertas;
         }
-        for (String linea : Files.readAllLines(archivo, StandardCharsets.UTF_8)) {
-            if (!esCabeceraOVacia(linea)) {
-                ofertas.add(convertirLinea(linea));
+        try (BufferedReader lector = new BufferedReader(new FileReader(archivo, StandardCharsets.UTF_8))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                if (!esCabeceraOVacia(linea)) {
+                    ofertas.add(convertirLinea(linea));
+                }
             }
         }
         return ofertas;
