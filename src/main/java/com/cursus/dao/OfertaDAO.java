@@ -1,5 +1,6 @@
 package com.cursus.dao;
 
+import com.cursus.model.Estado;
 import com.cursus.model.Oferta;
 
 import java.nio.charset.StandardCharsets;
@@ -30,6 +31,24 @@ public class OfertaDAO {
 
         }
         return ofertas;
+    }
+
+    public static Oferta convertirLinea(String linea) {
+        String[] partes = linea.split(";", -1);
+
+        if (partes.length < 5) {
+            throw new IllegalArgumentException("Faltan campos en la línea: " + linea);
+        }
+
+        int id = convertirId(partes[0]);
+        String titulo = partes[1];
+        String empresa = partes[2];
+        Estado estado = Estado.desdeTexto(partes[3]);
+        LocalDate fechaPostulacion = convertirFecha(partes[4]);
+        String enlace = partes[5];
+        String notas = partes[6];
+
+        return new Oferta(id, titulo, empresa, estado, fechaPostulacion, enlace, notas);
     }
 
     public static boolean esCabeceraOVacia(String linea) {
