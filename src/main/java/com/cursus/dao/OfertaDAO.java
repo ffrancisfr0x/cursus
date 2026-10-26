@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OfertaDAO {
-    private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
+    public static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
     private static final String CABECERA = "id;titulo;empresa;estado;fechaPostulacion;enlace;notas";
 
     private final File archivo;
