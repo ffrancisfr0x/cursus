@@ -5,7 +5,6 @@ import com.cursus.model.Oferta;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OfertaDAO {
-    private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy").withResolverStyle(ResolverStyle.STRICT);
+    private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
     private static final String CABECERA = "id;titulo;empresa;estado;fechaPostulacion;enlace;notas";
 
     private final File archivo;
