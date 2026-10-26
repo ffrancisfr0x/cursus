@@ -3,6 +3,7 @@ package com.cursus.dao;
 import com.cursus.model.Estado;
 import com.cursus.model.Oferta;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,13 +23,15 @@ public class OfertaDAO {
         this.archivo = archivo;
     }
 
-    public List<Oferta> leer() {
+    public List<Oferta> leer() throws IOException {
         List<Oferta> ofertas = new ArrayList<>();
         if (!Files.exists(this.archivo)) {
             return ofertas;
         }
         for (String linea : Files.readAllLines(archivo, StandardCharsets.UTF_8)) {
-
+            if (!esCabeceraOVacia(linea)) {
+                ofertas.add(convertirLinea(linea));
+            }
         }
         return ofertas;
     }
