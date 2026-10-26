@@ -4,7 +4,11 @@ import com.cursus.dao.OfertaDAO;
 import com.cursus.model.Estado;
 import com.cursus.model.Oferta;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +86,38 @@ public class OfertaService {
         ofertas.removeIf(o -> o.getId() == id);
         ofertaDAO.guardar(ofertas);
         return borrada;
+    }
+
+    public int importar(String rutaCsv, List<String> errores) throws IOException {
+        File csv = new File(rutaCsv);
+        if (!csv.exists()) {
+            throw new IllegalArgumentException("No se encuentra el archivo " + rutaCsv + ".");
+        }
+        List<Oferta> ofertas = ofertaDAO.leer();
+        int importadas = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csv, StandardCharsets.UTF_8))) {
+            String linea;
+            int num = 0;
+            while ((linea = br.readLine()) != null) {
+                num++;
+                if (OfertaDAO.esCabeceraOVacia(linea)) {
+                    continue;
+                }
+                try {
+                    Oferta oferta = OfertaDAO.convertirLinea(linea);
+                    if (existeId(ofertas, oferta.getId())) {
+                        oferta.setId(siguienteId(ofertas));
+                    }
+                    ofertas.add(oferta);
+                    importadas++;
+                } catch (IllegalArgumentException e) {
+                    errores.add("Línea " + num + ": " + e.getMessage());
+                }
+            }
+        }
+        ofertaDAO.guardar(ofertas);
+        return importadas;
     }
 
     private int siguienteId(List<Oferta> ofertas) {
