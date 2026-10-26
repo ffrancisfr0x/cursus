@@ -5,6 +5,7 @@ import com.cursus.model.Estado;
 import com.cursus.model.Oferta;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +47,14 @@ public class OfertaService {
         }
 
         return resultado;
+    }
+
+    private int siguienteId(List<Oferta> ofertas) {
+        int maximo = 0;
+        for (Oferta o : ofertas) {
+            maximo = Math.max(maximo, o.getId());
+        }
+        return maximo + 1;
     }
 
     private void comprobarTexto(String campo, String valor) {
