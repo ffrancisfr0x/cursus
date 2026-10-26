@@ -36,4 +36,13 @@ public class CandidaturaController {
             System.err.println("Error: " + e.getMessage());
         }
     }
+    private String leerOpcion(String[] args, String opcion) {
+        for (int i = 1; i < args.length - 1; i++) {
+            if (args[i].equals(opcion)) {
+                // Quita las comillas tipográficas “ ” por si el texto se ha copiado de un documento
+                return args[i + 1].replace("“", "").replace("”", "");
+            }
+        }
+        return null;
+    }
 }
