@@ -19,4 +19,21 @@ public class CandidaturaController {
         this.servicio = servicio;
     }
 
+    public void ejecutar(String[] args) {
+        if (args.length == 0) {
+            System.err.println("Error: no se ha indicado ningún comando.");
+            System.err.println(AYUDA);
+            return;
+        }
+        try {
+            switch (args[0]) {
+                default -> {
+                    System.err.println("Error: comando desconocido \"" + args[0] + "\".");
+                    System.err.println(AYUDA);
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
 }
