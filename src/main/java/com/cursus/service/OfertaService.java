@@ -76,6 +76,13 @@ public class OfertaService {
         throw new IllegalArgumentException("No existe ninguna candidatura con el ID " + id + ".");
     }
 
+    public Oferta borrar(int id) throws IOException {
+        List<Oferta> ofertas = ofertaDAO.leer();
+        Oferta borrada = ver(id);
+        ofertas.removeIf(o -> o.getId() == id);
+        ofertaDAO.guardar(ofertas);
+        return borrada;
+    }
 
     private int siguienteId(List<Oferta> ofertas) {
         int maximo = 0;
