@@ -4,10 +4,11 @@ import com.cursus.model.Estado;
 import com.cursus.model.Oferta;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,15 +20,15 @@ public class OfertaDAO {
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy").withResolverStyle(ResolverStyle.STRICT);
     private static final String CABECERA = "id;titulo;empresa;estado;fechaPostulacion;enlace;notas";
 
-    private final Path archivo;
+    private final File archivo;
 
-    public OfertaDAO(Path archivo) {
+    public OfertaDAO(File archivo) {
         this.archivo = archivo;
     }
 
     public List<Oferta> leer() throws IOException {
         List<Oferta> ofertas = new ArrayList<>();
-        if (!Files.exists(this.archivo)) {
+        if (!archivo.exists()) {
             return ofertas;
         }
         try (BufferedReader lector = new BufferedReader(new FileReader(archivo, StandardCharsets.UTF_8))) {
