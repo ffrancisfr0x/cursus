@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
@@ -58,19 +59,19 @@ public class OfertaDAO {
         return linea.isBlank() || linea.toLowerCase().startsWith("id;");
     }
 
-    public static int convertirId(String linea) {
+    public static int convertirId(String texto) {
         try {
-            return Integer.parseInt(linea.trim());
+            return Integer.parseInt(texto.trim());
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("El ID debe ser un número: " + linea.trim(), e);
+            throw new IllegalArgumentException("El ID debe ser un número: " + texto.trim(), e);
         }
     }
 
-    public static LocalDate convertirFecha(String linea) {
+    public static LocalDate convertirFecha(String texto) {
         try {
-            return LocalDate.parse(linea.trim(), FORMATO_FECHA);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("La fecha debe tener el formato dd/MM/yyyy: " + linea.trim(), e);
+            return LocalDate.parse(texto.trim(), FORMATO_FECHA);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("La fecha debe tener el formato dd/MM/yyyy: " + texto.trim(), e);
         }
     }
 }
