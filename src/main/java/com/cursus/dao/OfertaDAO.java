@@ -35,5 +35,11 @@ public class OfertaDAO {
         return linea.isBlank() || linea.toLowerCase().startsWith("id;");
     }
 
-
+    public static int convertirId(String linea) {
+        try {
+            return Integer.parseInt(linea.trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("\"El ID debe ser un número: " + linea.trim(), e);
+        }
+    }
 }
