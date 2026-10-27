@@ -90,6 +90,19 @@ public class CandidaturaController {
     }
 
 
+    private void importar(String[] args) throws IOException {
+        if (args.length < 2) {
+            throw new IllegalArgumentException("Falta la ruta del archivo CSV. Ejemplo: -importar
+                    datos.csv");
+        }
+        List<String> errores = new ArrayList<>();
+        int importadas = servicio.importar(args[1], errores);
+        System.out.println(importadas + " candidatura(s) importada(s).");
+        for (String error : errores) {
+            System.out.println(" No importada. " + error);
+        }
+    }
+
 
     private String leerOpcion(String[] args, String opcion) {
         for (int i = 1; i < args.length - 1; i++) {
