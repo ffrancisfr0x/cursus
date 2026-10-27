@@ -84,6 +84,12 @@ public class CandidaturaController {
         System.out.println(" Notas: " + o.getNotas());
     }
 
+    private void borrar(String[] args) throws IOException {
+        Oferta borrada = servicio.borrar(leerId(args));
+        System.out.println("Candidatura #" + borrada.getId() + " eliminada.");
+    }
+
+
 
     private String leerOpcion(String[] args, String opcion) {
         for (int i = 1; i < args.length - 1; i++) {
