@@ -73,6 +73,17 @@ public class CandidaturaController {
         System.out.println("Candidatura añadida con el ID " + nueva.getId() + ".");
     }
 
+    private void ver(String[] args) throws IOException {
+        Oferta o = servicio.ver(leerId(args));
+        System.out.println("Candidatura #" + o.getId());
+        System.out.println(" Puesto: " + o.getTitulo());
+        System.out.println(" Empresa: " + o.getEmpresa());
+        System.out.println(" Estado: " + o.getEstado());
+        System.out.println(" Fecha: " + o.getFechaPostulacion().format(OfertaDAO.FORMATO_FECHA));
+        System.out.println(" Enlace: " + o.getEnlace());
+        System.out.println(" Notas: " + o.getNotas());
+    }
+
 
     private String leerOpcion(String[] args, String opcion) {
         for (int i = 1; i < args.length - 1; i++) {
