@@ -6,6 +6,7 @@ import com.cursus.model.Estado;
 import com.cursus.model.Oferta;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CandidaturaController {
@@ -34,6 +35,10 @@ public class CandidaturaController {
         try {
             switch (args[0]) {
                 case "-listar" -> listar(args);
+                case "-añadir" -> anadir(args);
+                case "-ver"    -> ver(args);
+                case "-borrar" -> borrar(args);
+                case "-importar" -> importar(args);
                 default -> {
                     System.err.println("Error: comando desconocido \"" + args[0] + "\".");
                     System.err.println(AYUDA);
@@ -62,13 +67,71 @@ public class CandidaturaController {
         System.out.println(ofertas.size() + " candidatura(s).");
     }
 
+    private void anadir(String[] args) throws IOException {
+        Oferta nueva = servicio.anadir(
+                leerOpcion(args, "--titulo"),
+                leerOpcion(args, "--empresa"),
+                obligatoria(args, "--estado"),
+                leerOpcion(args, "--fecha"),
+                leerOpcion(args, "--enlace"),
+                leerOpcion(args, "--notas"));
+        System.out.println("Candidatura añadida con el ID " + nueva.getId() + ".");
+    }
+
+    private void ver(String[] args) throws IOException {
+        Oferta o = servicio.ver(leerId(args));
+        System.out.println("Candidatura #" + o.getId());
+        System.out.println(" Puesto: " + o.getTitulo());
+        System.out.println(" Empresa: " + o.getEmpresa());
+        System.out.println(" Estado: " + o.getEstado());
+        System.out.println(" Fecha: " + o.getFechaPostulacion().format(OfertaDAO.FORMATO_FECHA));
+        System.out.println(" Enlace: " + o.getEnlace());
+        System.out.println(" Notas: " + o.getNotas());
+    }
+
+    private void borrar(String[] args) throws IOException {
+        Oferta borrada = servicio.borrar(leerId(args));
+        System.out.println("Candidatura #" + borrada.getId() + " eliminada.");
+    }
+
+
+    private void importar(String[] args) throws IOException {
+        if (args.length < 2) {
+            throw new IllegalArgumentException("Falta la ruta del archivo CSV. Ejemplo: -importar datos.csv");
+        }
+        List<String> errores = new ArrayList<>();
+        int importadas = servicio.importar(args[1], errores);
+        System.out.println(importadas + " candidatura(s) importada(s).");
+        for (String error : errores) {
+            System.out.println(" No importada. " + error);
+        }
+    }
+
+
     private String leerOpcion(String[] args, String opcion) {
         for (int i = 1; i < args.length - 1; i++) {
             if (args[i].equals(opcion)) {
-                // Quita las comillas tipográficas “ ” por si el texto se ha copiado de un documento
+
                 return args[i + 1].replace("“", "").replace("”", "");
             }
         }
         return null;
     }
+
+    private String obligatoria(String[] args, String opcion) {
+
+        String valor = leerOpcion(args, opcion);
+        if (valor == null) {
+            throw new IllegalArgumentException("Falta el argumento " + opcion + ".");
+        }
+        return valor;
+    }
+
+    private int leerId(String[] args) {
+        if (args.length < 2) {
+            throw new IllegalArgumentException("Falta el ID. Ejemplo: " + args[0] + " 13");
+        }
+        return OfertaDAO.convertirId(args[1]);
+    }
 }
+
