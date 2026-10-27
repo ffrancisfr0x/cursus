@@ -123,4 +123,12 @@ public class CandidaturaController {
         return valor;
     }
 
+    private int leerId(String[] args) {
+        if (args.length < 2) {
+            throw new IllegalArgumentException("Falta el ID. Ejemplo: " + args[0] + " 13");
+        }
+        return OfertaDAO.convertirId(args[1]);
+    }
+}
+
 }
