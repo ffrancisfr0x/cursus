@@ -6,6 +6,7 @@ import com.cursus.model.Estado;
 import com.cursus.model.Oferta;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CandidaturaController {
@@ -92,8 +93,7 @@ public class CandidaturaController {
 
     private void importar(String[] args) throws IOException {
         if (args.length < 2) {
-            throw new IllegalArgumentException("Falta la ruta del archivo CSV. Ejemplo: -importar
-                    datos.csv");
+            throw new IllegalArgumentException("Falta la ruta del archivo CSV. Ejemplo: -importar datos.csv");
         }
         List<String> errores = new ArrayList<>();
         int importadas = servicio.importar(args[1], errores);
@@ -113,4 +113,14 @@ public class CandidaturaController {
         }
         return null;
     }
+
+    private String obligatoria(String[] args, String opcion) {
+
+        String valor = leerOpcion(args, opcion);
+        if (valor == null) {
+            throw new IllegalArgumentException("Falta el argumento " + opcion + ".");
+        }
+        return valor;
+    }
+
 }
