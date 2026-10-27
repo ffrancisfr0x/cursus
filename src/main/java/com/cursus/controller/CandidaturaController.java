@@ -62,6 +62,18 @@ public class CandidaturaController {
         System.out.println(ofertas.size() + " candidatura(s).");
     }
 
+    private void anadir(String[] args) throws IOException {
+        Oferta nueva = servicio.anadir(
+                leerOpcion(args, "--titulo"),
+                leerOpcion(args, "--empresa"),
+                obligatoria(args, "--estado"),
+                leerOpcion(args, "--fecha"),
+                leerOpcion(args, "--enlace"),
+                leerOpcion(args, "--notas"));
+        System.out.println("Candidatura añadida con el ID " + nueva.getId() + ".");
+    }
+
+
     private String leerOpcion(String[] args, String opcion) {
         for (int i = 1; i < args.length - 1; i++) {
             if (args[i].equals(opcion)) {
