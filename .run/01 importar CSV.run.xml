@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="01 importar CSV" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.cursus.Main" />
+    <module name="cursus" />
+    <option name="PROGRAM_PARAMETERS" value="-importar data/candidaturas-prueba.csv" />
+    <option name="VM_PARAMETERS" value="-Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
