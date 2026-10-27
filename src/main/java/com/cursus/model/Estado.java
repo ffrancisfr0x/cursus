@@ -1,7 +1,7 @@
 package com.cursus.model;
 
 public enum Estado {
-    PENDIENTE, ENTEVISTA, RECHAZADO, ACEPTADO;
+    PENDIENTE, ENTREVISTA, RECHAZADO, ACEPTADO;
 
     public static Estado desdeTexto(String texto) {
         try {

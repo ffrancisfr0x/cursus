@@ -35,6 +35,10 @@ public class CandidaturaController {
         try {
             switch (args[0]) {
                 case "-listar" -> listar(args);
+                case "-añadir" -> anadir(args);
+                case "-ver"    -> ver(args);
+                case "-borrar" -> borrar(args);
+                case "-importar" -> importar(args);
                 default -> {
                     System.err.println("Error: comando desconocido \"" + args[0] + "\".");
                     System.err.println(AYUDA);
@@ -107,7 +111,7 @@ public class CandidaturaController {
     private String leerOpcion(String[] args, String opcion) {
         for (int i = 1; i < args.length - 1; i++) {
             if (args[i].equals(opcion)) {
-                // Quita las comillas tipográficas “ ” por si el texto se ha copiado de un documento
+
                 return args[i + 1].replace("“", "").replace("”", "");
             }
         }
