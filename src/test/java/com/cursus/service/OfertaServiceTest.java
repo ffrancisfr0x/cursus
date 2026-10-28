@@ -63,50 +63,61 @@ class OfertaServiceTest {
         }
     }
 
+    /** Sin filtros, listar devuelve las 3 candidaturas del archivo de prueba. */
     @Test
     void listarSinFiltrosDevuelveTodas() throws IOException {
         assertEquals(3, servicio.listar(null, null).size());
     }
 
+    /** Filtrar por estado pendiente devuelve solo 1 candidatura. */
     @Test
     void listarFiltraPorEstado() throws IOException {
         assertEquals(1, servicio.listar(Estado.PENDIENTE, null).size());
     }
 
+    /** Filtrar por "accen" encuentra las 2 de Accenture, sin distinguir mayúsculas. */
     @Test
     void listarFiltraPorEmpresaSinDistinguirMayusculas() throws IOException {
         assertEquals(2, servicio.listar(null, "accen").size());
     }
 
+    /** Al añadir, el nuevo ID es el siguiente al mayor existente (el 4). */
     @Test
     void anadirAsignaElSiguienteId() throws IOException {
         Oferta nueva = servicio.anadir("QA Tester", "Indra", "pendiente", "15/10/2026", null, null);
         assertEquals(4, nueva.getId());
     }
 
+
+    /** Si no se indica fecha, se usa la de hoy. */
     @Test
     void anadirSinFechaUsaLaDeHoy() throws IOException {
         Oferta nueva = servicio.anadir("Dev Java", "Indra", "pendiente", null, null, null);
         assertEquals(LocalDate.now(), nueva.getFechaPostulacion());
     }
 
+
+    /** Una fecha imposible como el 31/02/2026 lanza error. */
     @Test
     void anadirRechazaFechaImposible() {
         assertThrows(IllegalArgumentException.class,
                 () -> servicio.anadir("QA", "Indra", "pendiente", "31/02/2026", null, null));
     }
 
+    /** Ver un ID que no existe lanza error. */
     @Test
     void verIdInexistenteLanzaError() {
         assertThrows(IllegalArgumentException.class, () -> servicio.ver(99));
     }
 
+    /** Borrar la candidatura 2 deja 2 en el archivo. */
     @Test
     void borrarEliminaLaCandidatura() throws IOException {
         servicio.borrar(2);
         assertEquals(2, servicio.listar(null, null).size());
     }
 
+    /** Importar salta la línea con estado inválido y añade solo la correcta. */
     @Test
     void importarSaltaLasLineasConErrores() throws IOException {
         File csv = new File(carpeta, "nuevas.csv");
@@ -120,4 +131,4 @@ class OfertaServiceTest {
         assertEquals(1, errores.size());
         assertEquals(4, servicio.listar(null, null).size());
     }
-}//
+}
