@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="E2 error comando desconocido" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.cursus.Main" />
+    <module name="cursus" />
+    <option name="PROGRAM_PARAMETERS" value="-volar " />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

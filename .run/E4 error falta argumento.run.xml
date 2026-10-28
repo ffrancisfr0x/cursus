@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="E4 error falta argumento" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.cursus.Main" />
+    <module name="cursus" />
+    <option name="PROGRAM_PARAMETERS" value="-añadir --titulo QA --empresa Indra --fecha 01/10/2026" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
