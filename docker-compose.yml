@@ -1,0 +1,17 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: cursus-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: cursus
+      MYSQL_DATABASE: cursus
+      MYSQL_USER: cursus
+      MYSQL_PASSWORD: cursus
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - cursus-datos:/var/lib/mysql
+
+volumes:
+  cursus-datos:

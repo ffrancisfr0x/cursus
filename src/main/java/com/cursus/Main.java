@@ -1,7 +1,5 @@
 package com.cursus;
 
-import com.cursus.controller.CandidaturaController;
-import com.cursus.dao.OfertaDAO;
 import com.cursus.service.OfertaService;
 
 import java.io.File;

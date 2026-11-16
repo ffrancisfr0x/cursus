@@ -1,0 +1,7 @@
+# Configuración de la conexión a MySQL.
+# Copia este archivo como config.properties (en la misma carpeta) y pon tus datos.
+# config.properties NO se sube a GitHub porque lleva tu contraseña.
+
+db.url=jdbc:mysql://localhost:3308/cursus?allowPublicKeyRetrieval=true&useSSL=false
+db.usuario=cursus
+db.password=

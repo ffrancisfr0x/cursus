@@ -4,6 +4,16 @@ target/
 !**/src/test/**/target/
 .kotlin
 
+### Maven ###
+target/
+
+### Sistema ###
+.DS_Store
+Thumbs.db
+
+### Cursus ###
+config.properties
+
 ### IntelliJ IDEA ###
 .idea/
 .idea/modules.xml
@@ -13,6 +23,7 @@ target/
 *.iws
 *.iml
 *.ipr
+out/
 
 ### Eclipse ###
 .apt_generated

@@ -1,6 +1,5 @@
 package com.cursus.service;
 
-import com.cursus.dao.OfertaDAO;
 import com.cursus.model.Estado;
 import com.cursus.model.Oferta;
 
