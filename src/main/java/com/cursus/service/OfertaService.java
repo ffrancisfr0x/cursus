@@ -1,6 +1,12 @@
 package com.cursus.service;
 
+import com.cursus.dao.EmpresaDAO;
+import com.cursus.dao.EntrevistaDAO;
+import com.cursus.dao.OfertaDAO;
+import com.cursus.db.ConexionBD;
+import com.cursus.model.Empresa;
 import com.cursus.model.Estado;
+import com.cursus.model.FiltroOferta;
 import com.cursus.model.Oferta;
 
 import java.io.BufferedReader;
@@ -8,223 +14,311 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Lógica de las candidaturas: listar, añadir, ver, borrar e importar.
- * <p>
- * Usa {@link OfertaDAO} para leer y guardar el archivo de datos. Los errores de datos
- * se avisan con {@link IllegalArgumentException} y un mensaje claro, que muestra el controller.
- */
 public class OfertaService {
 
-    /** Acceso al archivo de datos. */
+    private final ConexionBD conexion;
     private final OfertaDAO ofertaDAO;
+    private final EmpresaDAO empresaDAO;
+    private final EntrevistaDAO entrevistaDAO;
 
-    /**
-     * Crea el servicio.
-     *
-     * @param ofertaDAO acceso al archivo de candidaturas
-     */
-    public OfertaService(OfertaDAO ofertaDAO) {
+    public OfertaService(
+            ConexionBD conexion,
+            OfertaDAO ofertaDAO,
+            EmpresaDAO empresaDAO,
+            EntrevistaDAO entrevistaDAO) {
+
+        this.conexion = conexion;
         this.ofertaDAO = ofertaDAO;
+        this.empresaDAO = empresaDAO;
+        this.entrevistaDAO = entrevistaDAO;
     }
 
-    /**
-     * Devuelve las candidaturas que cumplen los filtros indicados.
-     * Si un filtro es {@code null}, no se aplica; si los dos son {@code null}, devuelve todas.
-     *
-     * @param estado  estado por el que filtrar, o {@code null} para no filtrar
-     * @param empresa texto que debe contener el nombre de la empresa, sin distinguir mayúsculas,
-     *                o {@code null} para no filtrar
-     * @return las candidaturas que cumplen los filtros
-     * @throws IOException si el archivo no se puede leer
-     */
-    public List<Oferta> listar(Estado estado, String empresa) throws IOException {
-        List<Oferta> resultado = new ArrayList<>();
+    public List<Oferta> buscar(FiltroOferta filtro) throws SQLException {
 
-        for (Oferta o : ofertaDAO.leer()) {
+        if (filtro.getSalarioMinimo() != null
+                && filtro.getSalarioMaximo() != null
+                && filtro.getSalarioMinimo() > filtro.getSalarioMaximo()) {
 
-            boolean cumpleEstado;
-
-            if (estado == null) {
-                cumpleEstado = true;
-            } else {
-                cumpleEstado = o.getEstado() == estado;
-            }
-
-            boolean cumpleEmpresa;
-
-            if (empresa == null) {
-                cumpleEmpresa = true;
-            } else {
-                String empresaOferta = o.getEmpresa().toLowerCase();
-                String empresaBuscada = empresa.toLowerCase();
-                cumpleEmpresa = empresaOferta.contains(empresaBuscada);
-            }
-
-            if (cumpleEstado && cumpleEmpresa) {
-                resultado.add(o);
-            }
+            throw new IllegalArgumentException(
+                    "El salario mínimo no puede ser mayor que el máximo.");
         }
 
-        return resultado;
+        if (filtro.getFechaDesde() != null
+                && filtro.getFechaHasta() != null
+                && filtro.getFechaDesde().isAfter(filtro.getFechaHasta())) {
+
+            throw new IllegalArgumentException(
+                    "La fecha «desde» no puede ser posterior a la fecha «hasta».");
+        }
+
+        filtro.setTitulo(Validacion.limpiar(filtro.getTitulo()));
+        filtro.setEmpresa(Validacion.limpiar(filtro.getEmpresa()));
+
+        try (Connection con = conexion.obtener()) {
+            return ofertaDAO.buscar(con, filtro);
+        }
     }
 
-    /**
-     * Añade una candidatura nueva con el siguiente ID libre y la guarda en el archivo.
-     *
-     * @param titulo  puesto al que se opta (obligatorio)
-     * @param empresa empresa que ofrece el puesto (obligatoria)
-     * @param estado  estado como texto, por ejemplo "pendiente"
-     * @param fecha   fecha como texto dd/MM/yyyy, o {@code null} para usar la de hoy
-     * @param enlace  enlace a la oferta, o {@code null}
-     * @param notas   notas sobre la candidatura, o {@code null}
-     * @return la candidatura creada, con su ID
-     * @throws IOException si el archivo no se puede leer o escribir
-     * @throws IllegalArgumentException si falta el título o la empresa, o si el estado o la fecha no son válidos
-     */
-    public Oferta anadir(String titulo, String empresa, String estado, String fecha,
-                         String enlace, String notas) throws IOException {
+    public Oferta ver(int id) throws SQLException {
 
-        comprobarTexto("titulo", titulo);
-        comprobarTexto("empresa", empresa);
+        try (Connection con = conexion.obtener()) {
 
-        List<Oferta> ofertas = ofertaDAO.leer();
+            Oferta oferta = ofertaDAO.buscarPorId(con, id);
 
-        Oferta nueva = new Oferta(siguienteId(ofertas), titulo, empresa, Estado.desdeTexto(estado),
-                fecha == null ? LocalDate.now() : OfertaDAO.convertirFecha(fecha), enlace == null ? "" :
-                enlace, notas == null ? "" : notas);
+            if (oferta == null) {
+                throw new IllegalArgumentException(
+                        "No existe ninguna candidatura con el ID " + id + ".");
+            }
 
-        ofertas.add(nueva);
-        ofertaDAO.guardar(ofertas);
-
-        return nueva;
+            return oferta;
+        }
     }
 
-    /**
-     * Busca una candidatura por su ID.
-     *
-     * @param id identificador de la candidatura
-     * @return la candidatura con ese ID
-     * @throws IOException si el archivo no se puede leer
-     * @throws IllegalArgumentException si no existe ninguna candidatura con ese ID
-     */
-    public Oferta ver(int id) throws IOException {
-        for (Oferta o : ofertaDAO.leer()) {
-            if (o.getId() == id) {
-                return o;
+    public void guardar(Oferta oferta) throws SQLException {
+
+        validar(oferta);
+
+        try (Connection con = conexion.obtener()) {
+
+            if (oferta.getId() == 0) {
+
+                ofertaDAO.insertar(con, oferta);
+
+            } else if (ofertaDAO.actualizar(con, oferta) == 0) {
+
+                throw new IllegalArgumentException(
+                        "No existe ninguna candidatura con el ID "
+                                + oferta.getId() + ".");
             }
         }
-        throw new IllegalArgumentException("No existe ninguna candidatura con el ID " + id + ".");
     }
 
-    /**
-     * Elimina una candidatura y guarda el archivo.
-     *
-     * @param id identificador de la candidatura
-     * @return la candidatura eliminada
-     * @throws IOException si el archivo no se puede leer o escribir
-     * @throws IllegalArgumentException si no existe ninguna candidatura con ese ID
-     */
-    public Oferta borrar(int id) throws IOException {
-        List<Oferta> ofertas = ofertaDAO.leer();
-        Oferta borrada = ver(id);
-        ofertas.removeIf(o -> o.getId() == id);
-        ofertaDAO.guardar(ofertas);
-        return borrada;
+    public void cambiarEstado(int id, Estado estado) throws SQLException {
+
+        if (estado == null) {
+            throw new IllegalArgumentException("Elige un estado.");
+        }
+
+        try (Connection con = conexion.obtener()) {
+
+            if (ofertaDAO.cambiarEstado(con, id, estado) == 0) {
+                throw new IllegalArgumentException(
+                        "No existe ninguna candidatura con el ID " + id + ".");
+            }
+        }
     }
 
-    /**
-     * Importa las candidaturas de un archivo CSV y las añade al archivo de datos.
-     * <p>
-     * Las líneas con errores no se importan: se apuntan en {@code errores} y se sigue con la siguiente.
-     * Si el ID de una línea ya existe, se le asigna el siguiente ID libre.
-     *
-     * @param rutaCsv ruta del archivo CSV
-     * @param errores lista donde se apuntan las líneas que no se han podido importar
-     * @return número de candidaturas importadas
-     * @throws IOException si algún archivo no se puede leer o escribir
-     * @throws IllegalArgumentException si el archivo CSV no existe
-     */
-    public int importar(String rutaCsv, List<String> errores) throws IOException {
-        File csv = new File(rutaCsv);
+    public void borrar(int id) throws SQLException {
+
+        try (Connection con = conexion.obtener()) {
+
+            con.setAutoCommit(false);
+
+            try {
+
+                entrevistaDAO.borrarPorOferta(con, id);
+
+                if (ofertaDAO.borrar(con, id) == 0) {
+                    throw new IllegalArgumentException(
+                            "No existe ninguna candidatura con el ID " + id + ".");
+                }
+
+                con.commit();
+
+            } catch (SQLException | RuntimeException e) {
+
+                con.rollback();
+                throw e;
+            }
+        }
+    }
+
+    public int importar(File csv, List<String> errores)
+            throws IOException, SQLException {
+
+        List<Oferta> ofertas = leerCsv(csv, errores);
+
+        try (Connection con = conexion.obtener()) {
+
+            con.setAutoCommit(false);
+
+            try {
+
+                for (Oferta oferta : ofertas) {
+
+                    String nombre = oferta.getEmpresa().getNombre();
+
+                    Empresa empresa = empresaDAO.buscarPorNombre(con, nombre);
+
+                    if (empresa == null) {
+
+                        empresa = new Empresa(
+                                0,
+                                nombre,
+                                null,
+                                null,
+                                LocalDate.now());
+
+                        empresaDAO.insertar(con, empresa);
+                    }
+
+                    oferta.setEmpresa(empresa);
+                    ofertaDAO.insertar(con, oferta);
+                }
+
+                con.commit();
+                return ofertas.size();
+
+            } catch (SQLException | RuntimeException e) {
+
+                con.rollback();
+                throw e;
+            }
+        }
+    }
+
+    private List<Oferta> leerCsv(File csv, List<String> errores)
+            throws IOException {
+
         if (!csv.exists()) {
-            throw new IllegalArgumentException("No se encuentra el archivo " + rutaCsv + ".");
+            throw new IllegalArgumentException(
+                    "No se encuentra el archivo " + csv.getPath() + ".");
         }
-        List<Oferta> ofertas = ofertaDAO.leer();
-        int importadas = 0;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(csv, StandardCharsets.UTF_8))) {
+        List<Oferta> ofertas = new ArrayList<>();
+
+        try (BufferedReader lector =
+                     new BufferedReader(
+                             new FileReader(csv, StandardCharsets.UTF_8))) {
+
             String linea;
-            int num = 0;
-            while ((linea = br.readLine()) != null) {
-                num++;
-                if (OfertaDAO.esCabeceraOVacia(linea)) {
+            int numero = 0;
+
+            while ((linea = lector.readLine()) != null) {
+
+                numero++;
+
+                if (linea.isBlank()
+                        || linea.toLowerCase().startsWith("id;")) {
                     continue;
                 }
+
                 try {
-                    Oferta oferta = OfertaDAO.convertirLinea(linea);
-                    if (existeId(ofertas, oferta.getId())) {
-                        oferta.setId(siguienteId(ofertas));
-                    }
-                    ofertas.add(oferta);
-                    importadas++;
+
+                    ofertas.add(convertirLinea(linea));
+
                 } catch (IllegalArgumentException e) {
-                    errores.add("Línea " + num + ": " + e.getMessage());
+
+                    errores.add(
+                            "Línea " + numero + ": " + e.getMessage());
                 }
             }
         }
-        ofertaDAO.guardar(ofertas);
-        return importadas;
+
+        return ofertas;
     }
 
-    /**
-     * Calcula el siguiente ID libre: el mayor que haya más uno.
-     *
-     * @param ofertas candidaturas actuales
-     * @return el siguiente ID libre, o 1 si no hay ninguna
-     */
-    private int siguienteId(List<Oferta> ofertas) {
-        int maximo = 0;
-        for (Oferta o : ofertas) {
-            maximo = Math.max(maximo, o.getId());
+    private Oferta convertirLinea(String linea) {
+
+        String[] partes = linea.split(";", -1);
+
+        if (partes.length < 7) {
+            throw new IllegalArgumentException("Faltan campos.");
         }
-        return maximo + 1;
+
+        Oferta oferta = new Oferta();
+
+        oferta.setTitulo(Validacion.limpiar(partes[1]));
+        oferta.setEmpresa(
+                new Empresa(
+                        0,
+                        Validacion.limpiar(partes[2]),
+                        null,
+                        null,
+                        null));
+
+        oferta.setEstado(Estado.desdeTexto(partes[3]));
+
+        try {
+
+            oferta.setFechaPostulacion(
+                    LocalDate.parse(
+                            partes[4].trim(),
+                            Validacion.FORMATO_FECHA));
+
+        } catch (DateTimeParseException e) {
+
+            throw new IllegalArgumentException(
+                    "Fecha no válida: "
+                            + partes[4].trim()
+                            + ". Usa dd/MM/yyyy.");
+        }
+
+        oferta.setEnlace(Validacion.limpiar(partes[5]));
+        oferta.setNotas(Validacion.limpiar(partes[6]));
+
+        Validacion.obligatorio(
+                oferta.getEmpresa().getNombre(),
+                "empresa",
+                100);
+
+        validarCampos(oferta);
+
+        return oferta;
     }
 
-    /**
-     * Indica si ya hay una candidatura con ese ID.
-     *
-     * @param ofertas candidaturas actuales
-     * @param id      identificador a buscar
-     * @return {@code true} si el ID ya existe
-     */
-    private boolean existeId(List<Oferta> ofertas, int id) {
-        for (Oferta o : ofertas) {
-            if (o.getId() == id) {
-                return true;
-            }
+    private void validar(Oferta oferta) {
+
+        oferta.setTitulo(Validacion.limpiar(oferta.getTitulo()));
+        oferta.setDescripcion(Validacion.limpiar(oferta.getDescripcion()));
+        oferta.setEnlace(Validacion.limpiar(oferta.getEnlace()));
+        oferta.setNotas(Validacion.limpiar(oferta.getNotas()));
+
+        if (oferta.getEmpresa() == null
+                || oferta.getEmpresa().getId() == 0) {
+
+            throw new IllegalArgumentException(
+                    "Elige una empresa.");
         }
-        return false;
+
+        validarCampos(oferta);
     }
 
-    /**
-     * Comprueba que un campo de texto obligatorio no está vacío y no contiene ";".
-     *
-     * @param campo nombre del campo, para el mensaje de error
-     * @param valor valor escrito por el usuario
-     * @throws IllegalArgumentException si el valor falta, está vacío o contiene ";"
-     */
-    private void comprobarTexto(String campo, String valor) {
-        if (valor == null || valor.isBlank()) {
-            throw new IllegalArgumentException("Falta el argumento --" + campo + ".");
-        }
-        if (valor.contains(";")) {
-            throw new IllegalArgumentException("El campo " + campo + " no puede contener \";\".");
-        }
-    }
+    private void validarCampos(Oferta oferta) {
 
+        Validacion.obligatorio(
+                oferta.getTitulo(),
+                "título",
+                150);
+
+        if (oferta.getEstado() == null) {
+            throw new IllegalArgumentException("Elige un estado.");
+        }
+
+        if (oferta.getFechaPostulacion() == null) {
+            throw new IllegalArgumentException(
+                    "La fecha de postulación es obligatoria.");
+        }
+
+        if (oferta.getFechaPostulacion().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException(
+                    "La fecha de postulación no puede ser futura.");
+        }
+
+        if (oferta.getSalario() != null
+                && oferta.getSalario() < 0) {
+
+            throw new IllegalArgumentException(
+                    "El salario no puede ser negativo.");
+        }
+
+        Validacion.url(oferta.getEnlace(), "enlace");
+    }
 }
