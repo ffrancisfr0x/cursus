@@ -16,9 +16,6 @@ public class Main {
      * @param args el comando y sus opciones, por ejemplo {@code -ver 13}
      */
     public static void main(String[] args) {
-        OfertaDAO dao = new OfertaDAO(new File("data", "candidaturas.txt"));
-        OfertaService servicio = new OfertaService(dao);
-        CandidaturaController controlador = new CandidaturaController(servicio);
-        controlador.ejecutar(args);
+
     }
 }
