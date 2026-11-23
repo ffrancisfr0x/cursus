@@ -41,20 +41,27 @@ public class EmpresaService {
         Validacion.url(empresa.getWeb(), "web");
 
         try (Connection con = conexion.obtener()) {
+
             Empresa otra = empresaDAO.buscarPorNombre(con, empresa.getNombre());
 
             if (otra != null && otra.getId() != empresa.getId()) {
-                throw new IllegalArgumentException("Ya existe una empresa llamada " + otra.getNombre() + ".");
-            }
-        }
-        if (empresa.getId() == 0) {
-            if (empresa.getFechaRegistro() == null) {
-                empresa.setFechaRegistro(LocalDate.now());
+                throw new IllegalArgumentException(
+                        "Ya existe una empresa llamada " + otra.getNombre() + ".");
             }
 
-            empresaDAO.insertar(con, empresa);
-        } else if (empresaDAO.actualizar(con, empresa) == 0) {
-            throw new IllegalArgumentException("No existe ninguna empresa con el ID " + empresa.getId() + ".");
+            if (empresa.getId() == 0) {
+
+                if (empresa.getFechaRegistro() == null) {
+                    empresa.setFechaRegistro(LocalDate.now());
+                }
+
+                empresaDAO.insertar(con, empresa);
+
+            } else if (empresaDAO.actualizar(con, empresa) == 0) {
+
+                throw new IllegalArgumentException(
+                        "No existe ninguna empresa con el ID " + empresa.getId() + ".");
+            }
         }
     }
 
