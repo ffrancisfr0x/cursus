@@ -1,0 +1,204 @@
+/* Estilos de Cursus v2.0, según el manual de estilo de la v1.0 */
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica", sans-serif;
+    -fx-font-size: 13px;
+    -fx-text-fill: #14213A;
+    -fx-background-color: #F3F5F8;
+}
+
+/* ---------- Menú lateral ---------- */
+.menu {
+    -fx-background-color: #0F1E33;
+}
+.logo-texto {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+.logo-punto {
+    -fx-fill: #F2B705;
+}
+.menu-opcion {
+    -fx-background-color: transparent;
+    -fx-text-fill: #D5DEEA;
+    -fx-font-size: 14px;
+    -fx-alignment: center-left;
+    -fx-padding: 11 14 11 14;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+.menu-opcion:hover {
+    -fx-background-color: #1A2D47;
+}
+.menu-opcion.activo {
+    -fx-background-color: #22395A;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent transparent transparent #F2B705;
+    -fx-border-width: 0 0 0 3;
+}
+.menu-pie {
+    -fx-text-fill: #8A9BB3;
+    -fx-font-size: 11px;
+}
+
+/* ---------- Páginas y tarjetas ---------- */
+.titulo {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+.subtitulo {
+    -fx-text-fill: #55657A;
+    -fx-font-size: 14px;
+}
+.titulo-seccion {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+.tarjeta {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 14;
+    -fx-border-color: #E6EBF2;
+    -fx-border-radius: 14;
+    -fx-padding: 18;
+}
+.etiqueta {
+    -fx-text-fill: #55657A;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+.valor {
+    -fx-font-size: 14px;
+}
+.obligatorio {
+    -fx-text-fill: #B42318;
+}
+.texto-error {
+    -fx-text-fill: #B42318;
+    -fx-font-weight: bold;
+}
+.texto-ok {
+    -fx-text-fill: #146C45;
+    -fx-font-weight: bold;
+}
+
+/* ---------- Botones ---------- */
+.button {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+}
+.boton-primario {
+    -fx-background-color: #1E3A5F;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+}
+.boton-primario:hover {
+    -fx-background-color: #162C48;
+}
+.boton-secundario {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #1E3A5F;
+    -fx-border-color: #D8E0EA;
+}
+.boton-secundario:hover {
+    -fx-background-color: #F1F5FA;
+}
+.boton-peligro {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #B42318;
+    -fx-border-color: #F1C4BF;
+}
+.boton-peligro:hover {
+    -fx-background-color: #FCE8E6;
+}
+.boton-volver {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1E3A5F;
+    -fx-padding: 4 0 4 0;
+    -fx-font-weight: bold;
+}
+.button:disabled {
+    -fx-opacity: 0.45;
+}
+
+/* ---------- Campos ---------- */
+.text-field, .text-area, .combo-box, .date-picker {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+.campo-error, .campo-error .text-field {
+    -fx-border-color: #B42318;
+    -fx-border-width: 1.5;
+}
+
+/* ---------- Tablas ---------- */
+.table-view {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 14;
+    -fx-border-color: #E6EBF2;
+    -fx-border-radius: 14;
+    -fx-padding: 4;
+}
+.table-view .column-header,
+.table-view .column-header-background,
+.table-view .filler {
+    -fx-background-color: #F3F5F8;
+}
+.table-view .column-header .label {
+    -fx-text-fill: #55657A;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+}
+.table-row-cell:selected {
+    -fx-background-color: #DCE5F0;
+}
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: #14213A;
+}
+
+/* ---------- Estados (texto y fondo del manual) ---------- */
+.estado-pendiente {
+    -fx-text-fill: #8A5300;
+    -fx-background-color: #FFF1D6;
+}
+.estado-entrevista {
+    -fx-text-fill: #5B34A8;
+    -fx-background-color: #EFE7FB;
+}
+.estado-rechazado {
+    -fx-text-fill: #A3241A;
+    -fx-background-color: #FCE8E6;
+}
+.estado-aceptado {
+    -fx-text-fill: #146C45;
+    -fx-background-color: #DFF3E8;
+}
+.pildora {
+    -fx-background-radius: 999;
+    -fx-padding: 4 12 4 12;
+    -fx-font-weight: bold;
+}
+.table-cell.estado-pendiente,
+.table-cell.estado-entrevista,
+.table-cell.estado-rechazado,
+.table-cell.estado-aceptado {
+    -fx-font-weight: bold;
+}
+
+/* ---------- Panel de entrevistas ---------- */
+.titled-pane > .title {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E6EBF2;
+    -fx-background-radius: 10 10 0 0;
+    -fx-border-radius: 10 10 0 0;
+    -fx-padding: 10 14 10 14;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+.titled-pane > .content {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E6EBF2;
+    -fx-padding: 14;
+}
