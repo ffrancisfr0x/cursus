@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane fx:id="raiz" prefHeight="720.0" prefWidth="1180.0"
+            stylesheets="@estilos.css"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.cursus.ui.PrincipalController">
+    <left>
+        <VBox prefWidth="240.0" minWidth="240.0" maxWidth="240.0" styleClass="menu">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="6.0">
+                    <children>
+                        <Label text="Cursus" styleClass="logo-texto"/>
+                        <Circle radius="4.0" styleClass="logo-punto"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="24.0"/>
+                    </VBox.margin>
+                </HBox>
+
+                <Button fx:id="btnCandidaturas" text="Candidaturas"
+                        onAction="#mostrarCandidaturas"
+                        maxWidth="Infinity" styleClass="menu-opcion"/>
+                <Button fx:id="btnEmpresas" text="Empresas"
+                        onAction="#mostrarEmpresas"
+                        maxWidth="Infinity" styleClass="menu-opcion"/>
+
+                <Region VBox.vgrow="ALWAYS"/>
+
+                <Label text="v2.0 · Francis Romero Flores y Antonio Tienda Díaz"
+                       wrapText="true" styleClass="menu-pie"/>
+            </children>
+        </VBox>
+    </left>
+</BorderPane>
