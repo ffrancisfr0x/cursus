@@ -1,21 +1,10 @@
 package com.cursus;
+import com.cursus.ui.CursusApp;
+import javafx.application.Application;
 
-import com.cursus.service.OfertaService;
 
-import java.io.File;
-
-/**
- * Punto de entrada de Cursus: crea las capas (DAO, servicio y controller),
- * las conecta y le pasa los argumentos al controller.
- */
 public class Main {
-
-    /**
-     * Arranca el programa y ejecuta una sola operación.
-     *
-     * @param args el comando y sus opciones, por ejemplo {@code -ver 13}
-     */
     public static void main(String[] args) {
-
+        Application.launch(CursusApp.class, args);
     }
 }
