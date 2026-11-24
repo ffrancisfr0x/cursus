@@ -21,6 +21,10 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Servicio encargado de gestionar las candidaturas y aplicar las
+ * reglas de negocio relacionadas con las ofertas de empleo.
+ */
 public class OfertaService {
 
     private final ConexionBD conexion;
@@ -28,6 +32,14 @@ public class OfertaService {
     private final EmpresaDAO empresaDAO;
     private final EntrevistaDAO entrevistaDAO;
 
+    /**
+     * Crea una instancia del servicio con las dependencias necesarias.
+     *
+     * @param conexion gestor de conexiones a la base de datos
+     * @param ofertaDAO acceso a datos de ofertas
+     * @param empresaDAO acceso a datos de empresas
+     * @param entrevistaDAO acceso a datos de entrevistas
+     */
     public OfertaService(
             ConexionBD conexion,
             OfertaDAO ofertaDAO,
@@ -40,6 +52,14 @@ public class OfertaService {
         this.entrevistaDAO = entrevistaDAO;
     }
 
+    /**
+     * Busca ofertas aplicando los criterios indicados en el filtro.
+     *
+     * @param filtro criterios de búsqueda
+     * @return lista de ofertas que cumplen el filtro
+     * @throws SQLException si se produce un error de acceso a datos
+     * @throws IllegalArgumentException si los criterios son incoherentes
+     */
     public List<Oferta> buscar(FiltroOferta filtro) throws SQLException {
 
         if (filtro.getSalarioMinimo() != null
@@ -66,6 +86,14 @@ public class OfertaService {
         }
     }
 
+    /**
+     * Obtiene una oferta a partir de su identificador.
+     *
+     * @param id identificador de la oferta
+     * @return oferta encontrada
+     * @throws SQLException si se produce un error de acceso a datos
+     * @throws IllegalArgumentException si la oferta no existe
+     */
     public Oferta ver(int id) throws SQLException {
 
         try (Connection con = conexion.obtener()) {
@@ -81,6 +109,13 @@ public class OfertaService {
         }
     }
 
+    /**
+     * Inserta o actualiza una oferta después de validar sus datos.
+     *
+     * @param oferta oferta a guardar
+     * @throws SQLException si se produce un error de acceso a datos
+     * @throws IllegalArgumentException si la información no es válida
+     */
     public void guardar(Oferta oferta) throws SQLException {
 
         validar(oferta);
@@ -100,6 +135,15 @@ public class OfertaService {
         }
     }
 
+    /**
+     * Cambia el estado de una candidatura.
+     *
+     * @param id identificador de la oferta
+     * @param estado nuevo estado
+     * @throws SQLException si se produce un error de acceso a datos
+     * @throws IllegalArgumentException si el estado es nulo o la oferta
+     *                                  no existe
+     */
     public void cambiarEstado(int id, Estado estado) throws SQLException {
 
         if (estado == null) {
@@ -115,6 +159,13 @@ public class OfertaService {
         }
     }
 
+    /**
+     * Elimina una candidatura y todas las entrevistas asociadas.
+     *
+     * @param id identificador de la oferta
+     * @throws SQLException si se produce un error durante la operación
+     * @throws IllegalArgumentException si la oferta no existe
+     */
     public void borrar(int id) throws SQLException {
 
         try (Connection con = conexion.obtener()) {
@@ -140,6 +191,15 @@ public class OfertaService {
         }
     }
 
+    /**
+     * Importa ofertas desde un archivo CSV.
+     *
+     * @param csv archivo CSV a importar
+     * @param errores lista donde se almacenarán los errores detectados
+     * @return número de ofertas importadas correctamente
+     * @throws IOException si se produce un error al leer el archivo
+     * @throws SQLException si se produce un error de acceso a datos
+     */
     public int importar(File csv, List<String> errores)
             throws IOException, SQLException {
 
@@ -184,6 +244,14 @@ public class OfertaService {
         }
     }
 
+    /**
+     * Lee un archivo CSV y convierte sus líneas en objetos Oferta.
+     *
+     * @param csv archivo CSV de origen
+     * @param errores colección donde se registran los errores encontrados
+     * @return lista de ofertas válidas
+     * @throws IOException si se produce un error de lectura
+     */
     private List<Oferta> leerCsv(File csv, List<String> errores)
             throws IOException {
 
@@ -225,6 +293,13 @@ public class OfertaService {
         return ofertas;
     }
 
+    /**
+     * Convierte una línea CSV en un objeto Oferta.
+     *
+     * @param linea línea leída del archivo
+     * @return oferta creada a partir de los datos de la línea
+     * @throws IllegalArgumentException si la línea contiene datos inválidos
+     */
     private Oferta convertirLinea(String linea) {
 
         String[] partes = linea.split(";", -1);
@@ -274,6 +349,12 @@ public class OfertaService {
         return oferta;
     }
 
+    /**
+     * Valida una oferta antes de almacenarla en la base de datos.
+     *
+     * @param oferta oferta a validar
+     * @throws IllegalArgumentException si algún dato no es válido
+     */
     private void validar(Oferta oferta) {
 
         oferta.setTitulo(Validacion.limpiar(oferta.getTitulo()));
@@ -291,6 +372,12 @@ public class OfertaService {
         validarCampos(oferta);
     }
 
+    /**
+     * Valida los campos comunes de una oferta.
+     *
+     * @param oferta oferta a validar
+     * @throws IllegalArgumentException si algún campo contiene valores inválidos
+     */
     private void validarCampos(Oferta oferta) {
 
         Validacion.obligatorio(

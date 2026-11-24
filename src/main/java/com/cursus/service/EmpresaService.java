@@ -11,26 +11,53 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Servicio encargado de gestionar las operaciones relacionadas con las
+ * empresas y aplicar las reglas de negocio correspondientes.
+ */
 public class EmpresaService {
+
     private final ConexionBD conexion;
     private final EmpresaDAO empresaDAO;
     private final OfertaDAO ofertaDAO;
     private final EntrevistaDAO entrevistaDAO;
 
-    public EmpresaService(ConexionBD conexion, EmpresaDAO empresaDAO, OfertaDAO ofertaDAO, EntrevistaDAO
-            entrevistaDAO) {
+    /**
+     * Crea una instancia del servicio con las dependencias necesarias.
+     *
+     * @param conexion gestor de conexiones a la base de datos
+     * @param empresaDAO acceso a datos de empresas
+     * @param ofertaDAO acceso a datos de ofertas
+     * @param entrevistaDAO acceso a datos de entrevistas
+     */
+    public EmpresaService(ConexionBD conexion, EmpresaDAO empresaDAO,
+                          OfertaDAO ofertaDAO, EntrevistaDAO entrevistaDAO) {
         this.conexion = conexion;
         this.empresaDAO = empresaDAO;
         this.ofertaDAO = ofertaDAO;
         this.entrevistaDAO = entrevistaDAO;
     }
 
+    /**
+     * Obtiene todas las empresas registradas en el sistema.
+     *
+     * @return lista de empresas
+     * @throws SQLException si se produce un error de acceso a datos
+     */
     public List<Empresa> listar() throws SQLException {
         try (Connection con = conexion.obtener()) {
             return empresaDAO.listar(con);
         }
     }
 
+    /**
+     * Inserta o actualiza una empresa después de validar sus datos.
+     *
+     * @param empresa empresa a guardar
+     * @throws SQLException si se produce un error de acceso a datos
+     * @throws IllegalArgumentException si los datos no son válidos o ya existe
+     *                                  una empresa con el mismo nombre
+     */
     public void guardar(Empresa empresa) throws SQLException {
         empresa.setNombre(Validacion.limpiar(empresa.getNombre()));
         empresa.setSector(Validacion.limpiar(empresa.getSector()));
@@ -65,19 +92,31 @@ public class EmpresaService {
         }
     }
 
+    /**
+     * Elimina una empresa y todos los registros relacionados con ella,
+     * incluyendo ofertas y entrevistas asociadas.
+     *
+     * @param id identificador de la empresa
+     * @return número de ofertas eliminadas
+     * @throws SQLException si se produce un error durante la operación
+     * @throws IllegalArgumentException si la empresa no existe
+     */
     public int borrar(int id) throws SQLException {
         try (Connection con = conexion.obtener()) {
             con.setAutoCommit(false);
+
             try {
                 entrevistaDAO.borrarPorEmpresa(con, id);
                 int ofertas = ofertaDAO.borrarPorEmpresa(con, id);
 
                 if (empresaDAO.borrar(con, id) == 0) {
-                    throw new IllegalArgumentException("No existe ninguna empresa con el ID " + id + ".");
+                    throw new IllegalArgumentException(
+                            "No existe ninguna empresa con el ID " + id + ".");
                 }
 
                 con.commit();
                 return ofertas;
+
             } catch (SQLException | RuntimeException e) {
                 con.rollback();
                 throw e;
