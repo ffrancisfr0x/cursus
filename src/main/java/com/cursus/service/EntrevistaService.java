@@ -11,12 +11,23 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Servicio encargado de gestionar las entrevistas asociadas a las
+ * candidaturas y aplicar las reglas de negocio correspondientes.
+ */
 public class EntrevistaService {
 
     private final ConexionBD conexion;
     private final EntrevistaDAO entrevistaDAO;
     private final OfertaDAO ofertaDAO;
 
+    /**
+     * Crea una instancia del servicio con las dependencias necesarias.
+     *
+     * @param conexion gestor de conexiones a la base de datos
+     * @param entrevistaDAO acceso a datos de entrevistas
+     * @param ofertaDAO acceso a datos de ofertas
+     */
     public EntrevistaService(
             ConexionBD conexion,
             EntrevistaDAO entrevistaDAO,
@@ -27,6 +38,13 @@ public class EntrevistaService {
         this.ofertaDAO = ofertaDAO;
     }
 
+    /**
+     * Obtiene todas las entrevistas asociadas a una oferta.
+     *
+     * @param idOferta identificador de la oferta
+     * @return lista de entrevistas de la oferta
+     * @throws SQLException si se produce un error de acceso a datos
+     */
     public List<Entrevista> listarPorOferta(int idOferta)
             throws SQLException {
 
@@ -35,6 +53,16 @@ public class EntrevistaService {
         }
     }
 
+    /**
+     * Inserta o actualiza una entrevista después de validar sus datos.
+     * Cuando se crea una nueva entrevista para una candidatura pendiente,
+     * el estado de la oferta pasa automáticamente a entrevista.
+     *
+     * @param entrevista entrevista a guardar
+     * @throws SQLException si se produce un error de acceso a datos
+     * @throws IllegalArgumentException si los datos no son válidos o la
+     *                                  oferta asociada no existe
+     */
     public void guardar(Entrevista entrevista)
             throws SQLException {
 
@@ -84,6 +112,13 @@ public class EntrevistaService {
         }
     }
 
+    /**
+     * Elimina una entrevista a partir de su identificador.
+     *
+     * @param id identificador de la entrevista
+     * @throws SQLException si se produce un error de acceso a datos
+     * @throws IllegalArgumentException si la entrevista no existe
+     */
     public void borrar(int id)
             throws SQLException {
 
@@ -97,6 +132,13 @@ public class EntrevistaService {
         }
     }
 
+    /**
+     * Comprueba que los datos de la entrevista sean válidos antes de
+     * realizar operaciones de persistencia.
+     *
+     * @param entrevista entrevista a validar
+     * @throws IllegalArgumentException si algún dato no es válido
+     */
     private void validar(Entrevista entrevista) {
 
         entrevista.setNotas(
