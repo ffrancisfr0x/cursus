@@ -103,9 +103,7 @@ public class DetalleOfertaController {
     }
     @FXML
     private void editar() {
-        FormularioOfertaController formulario = Navegador.abrirDialogo("formulario-oferta.fxml", "Editar
-                candidatura",
-        (FormularioOfertaController c) -> c.editar(oferta.getId()));
+        FormularioOfertaController formulario = Navegador.abrirDialogo("formulario-oferta.fxml", "Editar candidatura", (FormularioOfertaController c) -> c.editar(oferta.getId()));
         if (formulario.isGuardado()) {
             cargar(oferta.getId());
         }
