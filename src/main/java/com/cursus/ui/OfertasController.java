@@ -25,6 +25,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controlador de la pantalla de candidaturas. Muestra el listado en una tabla,
+ * permite filtrarlo, cambiar el estado desde la propia tabla, crear, editar,
+ * ver y borrar candidaturas, e importarlas desde un archivo CSV.
+ */
 public class OfertasController {
 
     @FXML
@@ -64,6 +69,12 @@ public class OfertasController {
     @FXML
     private Button btnBorrar;
 
+    /**
+     * Inicializa la pantalla: rellena la lista de estados, configura el formato
+     * de las fechas, enlaza las columnas con las propiedades de la candidatura,
+     * habilita el cambio de estado con doble clic, desactiva los botones
+     * mientras no haya una fila seleccionada y carga el listado inicial.
+     */
     @FXML
     private void initialize() {
         cbEstado.getItems().setAll(Estado.values());
@@ -83,6 +94,12 @@ public class OfertasController {
         colSalario.setCellValueFactory(new PropertyValueFactory<>("salario"));
 
         colFecha.setCellFactory(columna -> new TableCell<>() {
+            /**
+             * Muestra la fecha con el formato de la aplicación o deja la celda vacía.
+             *
+             * @param fecha fecha de postulación de la fila
+             * @param vacia indica si la celda no tiene contenido
+             */
             @Override
             protected void updateItem(LocalDate fecha, boolean vacia) {
                 super.updateItem(fecha, vacia);
@@ -91,6 +108,12 @@ public class OfertasController {
         });
 
         colSalario.setCellFactory(columna -> new TableCell<>() {
+            /**
+             * Muestra el salario con el formato de la aplicación o deja la celda vacía.
+             *
+             * @param salario salario de la fila, que puede ser null
+             * @param vacia indica si la celda no tiene contenido
+             */
             @Override
             protected void updateItem(Double salario, boolean vacia) {
                 super.updateItem(salario, vacia);
@@ -102,6 +125,13 @@ public class OfertasController {
         // y la celda se colorea según el estado.
         colEstado.setCellFactory(columna -> {
             ComboBoxTableCell<Oferta, Estado> celda = new ComboBoxTableCell<>(Estado.values()) {
+                /**
+                 * Muestra el estado y aplica a la celda la clase de estilo
+                 * correspondiente para colorearla.
+                 *
+                 * @param estado estado de la candidatura de la fila
+                 * @param vacia indica si la celda no tiene contenido
+                 */
                 @Override
                 public void updateItem(Estado estado, boolean vacia) {
                     super.updateItem(estado, vacia);
@@ -131,6 +161,12 @@ public class OfertasController {
         buscar();
     }
 
+    /**
+     * Construye un filtro con los valores del formulario de búsqueda, consulta
+     * las candidaturas que lo cumplen y las muestra en la tabla junto con el
+     * total. Si algún valor no es válido, muestra el motivo, y si falla la base
+     * de datos, muestra un aviso de error.
+     */
     @FXML
     private void buscar() {
         try {
@@ -153,6 +189,9 @@ public class OfertasController {
         }
     }
 
+    /**
+     * Vacía todos los campos de filtrado y vuelve a mostrar el listado completo.
+     */
     @FXML
     private void limpiar() {
         txtTitulo.clear();
@@ -165,6 +204,14 @@ public class OfertasController {
         buscar();
     }
 
+    /**
+     * Guarda el nuevo estado de una candidatura editada desde la tabla y
+     * actualiza la fila. Si el cambio no es válido o falla la base de datos,
+     * muestra un aviso y la tabla se refresca con el valor anterior.
+     *
+     * @param oferta candidatura cuyo estado se ha modificado
+     * @param estado nuevo estado elegido en el desplegable
+     */
     private void cambiarEstado(Oferta oferta, Estado estado) {
         try {
             Servicios.ofertas().cambiarEstado(oferta.getId(), estado);
@@ -177,6 +224,10 @@ public class OfertasController {
         tabla.refresh();
     }
 
+    /**
+     * Abre el formulario modal para registrar una candidatura nueva y, si se
+     * guarda, actualiza el listado.
+     */
     @FXML
     private void nueva() {
         FormularioOfertaController formulario = Navegador.abrirDialogo("formulario-oferta.fxml", "Nueva candidatura",
@@ -186,6 +237,10 @@ public class OfertasController {
         }
     }
 
+    /**
+     * Abre el formulario modal para editar la candidatura seleccionada y, si se
+     * guardan los cambios, actualiza el listado.
+     */
     @FXML
     private void editar() {
         int id = tabla.getSelectionModel().getSelectedItem().getId();
@@ -196,6 +251,9 @@ public class OfertasController {
         }
     }
 
+    /**
+     * Sustituye la vista actual por el detalle de la candidatura seleccionada.
+     */
     @FXML
     private void verDetalle() {
         int id = tabla.getSelectionModel().getSelectedItem().getId();
@@ -203,6 +261,11 @@ public class OfertasController {
         detalle.cargar(id);
     }
 
+    /**
+     * Borra la candidatura seleccionada tras pedir confirmación. También se
+     * borran sus entrevistas. Al terminar, actualiza el listado; si falla el
+     * borrado, muestra un aviso de error.
+     */
     @FXML
     private void borrar() {
         Oferta oferta = tabla.getSelectionModel().getSelectedItem();
@@ -222,6 +285,12 @@ public class OfertasController {
         }
     }
 
+    /**
+     * Permite elegir un archivo CSV e importa las candidaturas que contiene.
+     * Al terminar, informa de cuántas se han importado y de los motivos por los
+     * que no se ha importado alguna, y actualiza el listado. Si el archivo no se
+     * puede leer o no es válido, muestra un aviso de error.
+     */
     @FXML
     private void importar() {
         FileChooser selector = new FileChooser();
