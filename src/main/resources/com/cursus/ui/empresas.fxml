@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox spacing="16.0" styleClass="contenido"
+      stylesheets="@estilos.css"
       xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.cursus.ui.EmpresasController">

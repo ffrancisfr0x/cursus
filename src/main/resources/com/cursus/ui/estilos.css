@@ -1,204 +1,227 @@
-/* Estilos de Cursus v2.0, según el manual de estilo de la v1.0 */
+/* ===== Base ===== */
 .root {
-    -fx-font-family: "Segoe UI", "Helvetica", sans-serif;
+    -fx-font-family: "Segoe UI", "Noto Sans", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 13px;
-    -fx-text-fill: #14213A;
-    -fx-background-color: #F3F5F8;
+    -fx-background-color: #eef3f3;
 }
 
-/* ---------- Menú lateral ---------- */
+/* ===== Menú lateral ===== */
 .menu {
-    -fx-background-color: #0F1E33;
+    -fx-background-color: #0f1f3d;
+    -fx-padding: 28 16 16 16;
+    -fx-spacing: 6;
 }
 .logo-texto {
-    -fx-text-fill: #FFFFFF;
-    -fx-font-size: 22px;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
 }
-.logo-punto {
-    -fx-fill: #F2B705;
-}
+.logo-punto { -fx-fill: #f5b400; }
+
 .menu-opcion {
     -fx-background-color: transparent;
-    -fx-text-fill: #D5DEEA;
-    -fx-font-size: 14px;
-    -fx-alignment: center-left;
-    -fx-padding: 11 14 11 14;
-    -fx-background-radius: 10;
+    -fx-text-fill: #b8c4dc;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 9 14 9 14;
+    -fx-background-radius: 6;
     -fx-cursor: hand;
 }
-.menu-opcion:hover {
-    -fx-background-color: #1A2D47;
-}
+.menu-opcion:hover { -fx-background-color: #1a2d52; }
 .menu-opcion.activo {
-    -fx-background-color: #22395A;
-    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #1e3a6e;
+    -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-border-color: transparent transparent transparent #F2B705;
+    -fx-border-color: #f5b400;
     -fx-border-width: 0 0 0 3;
 }
 .menu-pie {
-    -fx-text-fill: #8A9BB3;
-    -fx-font-size: 11px;
+    -fx-text-fill: #6f7f9e;
+    -fx-font-size: 10px;
 }
 
-/* ---------- Páginas y tarjetas ---------- */
+/* ===== Contenido ===== */
+.contenido { -fx-background-color: #eef3f3; }
 .titulo {
-    -fx-font-size: 26px;
+    -fx-font-size: 24px;
     -fx-font-weight: bold;
+    -fx-text-fill: #14213d;
 }
 .subtitulo {
-    -fx-text-fill: #55657A;
-    -fx-font-size: 14px;
-}
-.titulo-seccion {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-}
-.tarjeta {
-    -fx-background-color: #FFFFFF;
-    -fx-background-radius: 14;
-    -fx-border-color: #E6EBF2;
-    -fx-border-radius: 14;
-    -fx-padding: 18;
+    -fx-font-size: 11px;
+    -fx-text-fill: #6b7788;
 }
 .etiqueta {
-    -fx-text-fill: #55657A;
-    -fx-font-size: 12px;
+    -fx-font-size: 10px;
     -fx-font-weight: bold;
-}
-.valor {
-    -fx-font-size: 14px;
-}
-.obligatorio {
-    -fx-text-fill: #B42318;
-}
-.texto-error {
-    -fx-text-fill: #B42318;
-    -fx-font-weight: bold;
-}
-.texto-ok {
-    -fx-text-fill: #146C45;
-    -fx-font-weight: bold;
+    -fx-text-fill: #14213d;
 }
 
-/* ---------- Botones ---------- */
-.button {
+.tarjeta {
+    -fx-background-color: white;
     -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-padding: 8 16 8 16;
+    -fx-padding: 14 16 14 16;
+    -fx-effect: dropshadow(gaussian, rgba(20,33,61,0.08), 8, 0, 0, 2);
+}
+
+/* ===== Botones ===== */
+.boton-primario, .boton-secundario, .boton-peligro {
+    -fx-background-radius: 6;
+    -fx-padding: 7 16 7 16;
     -fx-cursor: hand;
 }
 .boton-primario {
-    -fx-background-color: #1E3A5F;
-    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #1e3a6e;
+    -fx-text-fill: white;
     -fx-font-weight: bold;
 }
-.boton-primario:hover {
-    -fx-background-color: #162C48;
-}
+.boton-primario:hover { -fx-background-color: #2a4d8f; }
 .boton-secundario {
-    -fx-background-color: #FFFFFF;
-    -fx-text-fill: #1E3A5F;
-    -fx-border-color: #D8E0EA;
+    -fx-background-color: white;
+    -fx-text-fill: #14213d;
+    -fx-border-color: #d3dbe6;
+    -fx-border-radius: 6;
 }
-.boton-secundario:hover {
-    -fx-background-color: #F1F5FA;
-}
+.boton-secundario:hover { -fx-background-color: #f2f5f9; }
 .boton-peligro {
-    -fx-background-color: #FFFFFF;
-    -fx-text-fill: #B42318;
-    -fx-border-color: #F1C4BF;
+    -fx-background-color: white;
+    -fx-text-fill: #c0392b;
+    -fx-border-color: #e8b4ae;
+    -fx-border-radius: 6;
 }
-.boton-peligro:hover {
-    -fx-background-color: #FCE8E6;
+.boton-peligro:hover { -fx-background-color: #fdf0ee; }
+.button:disabled { -fx-opacity: 0.45; }
+
+/* ===== Campos ===== */
+.text-field, .combo-box, .date-picker {
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #d3dbe6;
+    -fx-background-color: white;
 }
-.boton-volver {
-    -fx-background-color: transparent;
-    -fx-text-fill: #1E3A5F;
-    -fx-padding: 4 0 4 0;
-    -fx-font-weight: bold;
-}
-.button:disabled {
-    -fx-opacity: 0.45;
+.text-field { -fx-padding: 6 8 6 8; }
+.text-field:focused, .combo-box:focused, .date-picker:focused {
+    -fx-border-color: #1e3a6e;
 }
 
-/* ---------- Campos ---------- */
-.text-field, .text-area, .combo-box, .date-picker {
+/* ===== Tabla ===== */
+.table-view {
+    -fx-background-color: white;
     -fx-background-radius: 10;
+    -fx-border-color: #e1e7ee;
     -fx-border-radius: 10;
 }
-.campo-error, .campo-error .text-field {
-    -fx-border-color: #B42318;
-    -fx-border-width: 1.5;
+.table-view .column-header-background {
+    -fx-background-color: #f4f7fa;
 }
-
-/* ---------- Tablas ---------- */
-.table-view {
-    -fx-background-color: #FFFFFF;
-    -fx-background-radius: 14;
-    -fx-border-color: #E6EBF2;
-    -fx-border-radius: 14;
-    -fx-padding: 4;
-}
-.table-view .column-header,
-.table-view .column-header-background,
-.table-view .filler {
-    -fx-background-color: #F3F5F8;
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: #f4f7fa;
+    -fx-border-color: transparent transparent #e1e7ee transparent;
+    -fx-size: 32;
 }
 .table-view .column-header .label {
-    -fx-text-fill: #55657A;
+    -fx-text-fill: #14213d;
     -fx-font-weight: bold;
-    -fx-alignment: center-left;
+    -fx-font-size: 11px;
+    -fx-alignment: CENTER_LEFT;
 }
-.table-row-cell:selected {
-    -fx-background-color: #DCE5F0;
-}
-.table-row-cell:selected .table-cell {
-    -fx-text-fill: #14213A;
-}
+.table-row-cell { -fx-cell-size: 28; -fx-background-color: white; }
+.table-row-cell:selected { -fx-background-color: #dbe7fb; }
+.table-cell { -fx-text-fill: #14213d; -fx-alignment: CENTER_LEFT; }
+.table-row-cell:selected .table-cell { -fx-text-fill: #14213d; }
 
-/* ---------- Estados (texto y fondo del manual) ---------- */
-.estado-pendiente {
-    -fx-text-fill: #8A5300;
-    -fx-background-color: #FFF1D6;
-}
-.estado-entrevista {
-    -fx-text-fill: #5B34A8;
-    -fx-background-color: #EFE7FB;
-}
-.estado-rechazado {
-    -fx-text-fill: #A3241A;
-    -fx-background-color: #FCE8E6;
-}
-.estado-aceptado {
-    -fx-text-fill: #146C45;
-    -fx-background-color: #DFF3E8;
-}
-.pildora {
-    -fx-background-radius: 999;
-    -fx-padding: 4 12 4 12;
-    -fx-font-weight: bold;
-}
-.table-cell.estado-pendiente,
-.table-cell.estado-entrevista,
-.table-cell.estado-rechazado,
-.table-cell.estado-aceptado {
-    -fx-font-weight: bold;
-}
+/* Chips de estado (se asignan desde el cell factory de colEstado) */
+.estado-pendiente  { -fx-background-color: #fdebc8; -fx-text-fill: #9a6200; -fx-font-weight: bold; }
+.estado-entrevista { -fx-background-color: #e6ddfa; -fx-text-fill: #5a38b0; -fx-font-weight: bold; }
+.estado-aceptado   { -fx-background-color: #d9f1df; -fx-text-fill: #1f7a3a; -fx-font-weight: bold; }
+.estado-rechazado  { -fx-background-color: #fbdcdc; -fx-text-fill: #b3261e; -fx-font-weight: bold; }
 
-/* ---------- Panel de entrevistas ---------- */
-.titled-pane > .title {
-    -fx-background-color: #FFFFFF;
-    -fx-border-color: #E6EBF2;
-    -fx-background-radius: 10 10 0 0;
-    -fx-border-radius: 10 10 0 0;
-    -fx-padding: 10 14 10 14;
+/* ===== Formulario de candidatura ===== */
+.formulario {
+    -fx-background-color: #eef3f3;
+    -fx-border-color: #d3dbe6;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+.titulo-seccion {
     -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #14213d;
+}
+.texto-error {
+    -fx-text-fill: #b3261e;
+    -fx-font-size: 11px;
+}
+.text-area {
+    -fx-background-color: white;
+    -fx-background-radius: 6;
+    -fx-border-color: #d3dbe6;
+    -fx-border-radius: 6;
+}
+.text-area .content { -fx-background-color: white; -fx-background-radius: 6; }
+.text-area:focused { -fx-border-color: #1e3a6e; }
+
+/* ===== Detalle de candidatura ===== */
+.scroll-pane { -fx-background-color: transparent; -fx-padding: 0; }
+.scroll-pane > .viewport { -fx-background-color: #eef3f3; }
+
+.boton-volver {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1e3a6e;
+    -fx-font-size: 11px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+.boton-volver:hover { -fx-underline: true; }
+
+.valor {
+    -fx-text-fill: #14213d;
+    -fx-font-size: 12px;
+}
+
+/* Píldora de estado; añade además estado-xxx desde el controlador */
+.pildora {
+    -fx-background-radius: 10;
+    -fx-padding: 2 8 2 8;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-color: #e6ddfa;
+    -fx-text-fill: #5a38b0;
+}
+.pildora.estado-pendiente  { -fx-background-color: #fdebc8; -fx-text-fill: #9a6200; }
+.pildora.estado-entrevista { -fx-background-color: #e6ddfa; -fx-text-fill: #5a38b0; }
+.pildora.estado-aceptado   { -fx-background-color: #d9f1df; -fx-text-fill: #1f7a3a; }
+.pildora.estado-rechazado  { -fx-background-color: #fbdcdc; -fx-text-fill: #b3261e; }
+
+.titled-pane { -fx-text-fill: #14213d; }
+.titled-pane > .title {
+    -fx-background-color: white;
+    -fx-background-radius: 10 10 0 0;
+    -fx-border-color: #e1e7ee;
+    -fx-border-radius: 10 10 0 0;
     -fx-font-weight: bold;
 }
 .titled-pane > .content {
-    -fx-background-color: #FFFFFF;
-    -fx-border-color: #E6EBF2;
-    -fx-padding: 14;
+    -fx-background-color: white;
+    -fx-border-color: #e1e7ee;
+    -fx-border-width: 0 1 1 1;
+}
+
+/* ===== Ajustes finales ===== */
+/* Mensaje de éxito (lo usa EmpresasController) */
+.texto-ok {
+    -fx-text-fill: #1f7a3a;
+    -fx-font-size: 11px;
+}
+
+/* Filas alternas en las tablas */
+.table-row-cell:odd { -fx-background-color: #f6f8fa; }
+.table-row-cell:odd:selected,
+.table-row-cell:selected { -fx-background-color: #dbe7fb; }
+
+/* Celda de estado: chip con bordes redondeados */
+.table-cell.estado-pendiente,
+.table-cell.estado-entrevista,
+.table-cell.estado-aceptado,
+.table-cell.estado-rechazado {
+    -fx-background-radius: 4;
 }

@@ -1,4 +1,5 @@
 package com.cursus.ui;
+
 import com.cursus.model.Estado;
 import com.cursus.model.FiltroOferta;
 import com.cursus.model.Oferta;
@@ -11,19 +12,21 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 public class OfertasController {
+
     @FXML
     private TextField txtTitulo;
     @FXML
@@ -60,18 +63,25 @@ public class OfertasController {
     private Button btnEditar;
     @FXML
     private Button btnBorrar;
+
     @FXML
     private void initialize() {
         cbEstado.getItems().setAll(Estado.values());
         Campos.formatoFecha(dpDesde);
         Campos.formatoFecha(dpHasta);
+
+        // IMPORTANTE: sin esto la tabla no deja editar y el desplegable de estado nunca aparece.
+        tabla.setEditable(true);
+        colEstado.setEditable(true);
+
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
-        colEmpresa.setCellValueFactory(fila -> new
-                SimpleStringProperty(fila.getValue().getEmpresa().getNombre()));
+        colEmpresa.setCellValueFactory(fila ->
+                new SimpleStringProperty(fila.getValue().getEmpresa().getNombre()));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
         colFecha.setCellValueFactory(new PropertyValueFactory<>("fechaPostulacion"));
         colSalario.setCellValueFactory(new PropertyValueFactory<>("salario"));
+
         colFecha.setCellFactory(columna -> new TableCell<>() {
             @Override
             protected void updateItem(LocalDate fecha, boolean vacia) {
@@ -79,30 +89,48 @@ public class OfertasController {
                 setText(vacia ? null : Campos.fecha(fecha));
             }
         });
-        colSalario.setCellFactory(columna -> new TableCell<>() {@Override
-        protected void updateItem(Double salario, boolean vacia) {
-            super.updateItem(salario, vacia);
-            setText(vacia ? null : Campos.salario(salario));
-        }
-        });
-// HU-12: el estado se cambia con un desplegable dentro de la tabla, coloreado según el manual.
-        colEstado.setCellFactory(columna -> new ComboBoxTableCell<>(Estado.values()) {
+
+        colSalario.setCellFactory(columna -> new TableCell<>() {
             @Override
-            public void updateItem(Estado estado, boolean vacia) {
-                super.updateItem(estado, vacia);
-                getStyleClass().removeAll("estado-pendiente", "estado-entrevista", "estado-rechazado", "estadoaceptado");
-                if (!vacia && estado != null) {
-                    getStyleClass().add("estado-" + estado);
-                }
+            protected void updateItem(Double salario, boolean vacia) {
+                super.updateItem(salario, vacia);
+                setText(vacia ? null : Campos.salario(salario));
             }
         });
+
+        // HU-12: el estado se cambia con doble clic (aparece un desplegable dentro de la tabla),
+        // y la celda se colorea según el estado.
+        colEstado.setCellFactory(columna -> {
+            ComboBoxTableCell<Oferta, Estado> celda = new ComboBoxTableCell<>(Estado.values()) {
+                @Override
+                public void updateItem(Estado estado, boolean vacia) {
+                    super.updateItem(estado, vacia);
+                    getStyleClass().removeAll("estado-pendiente", "estado-entrevista",
+                            "estado-rechazado", "estado-aceptado");
+                    if (!vacia && estado != null) {
+                        getStyleClass().add("estado-" + estado.name().toLowerCase());
+                    }
+                }
+            };
+
+            // Doble clic: entra en modo edición y muestra el desplegable.
+            celda.setOnMouseClicked(evento -> {
+                if (evento.getClickCount() == 2 && !celda.isEmpty() && !celda.isEditing()) {
+                    celda.getTableView().edit(celda.getIndex(), colEstado);
+                }
+            });
+            return celda;
+        });
         colEstado.setOnEditCommit(evento -> cambiarEstado(evento.getRowValue(), evento.getNewValue()));
+
         BooleanBinding sinSeleccion = tabla.getSelectionModel().selectedItemProperty().isNull();
         btnVer.disableProperty().bind(sinSeleccion);
         btnEditar.disableProperty().bind(sinSeleccion);
         btnBorrar.disableProperty().bind(sinSeleccion);
+
         buscar();
     }
+
     @FXML
     private void buscar() {
         try {
@@ -114,6 +142,7 @@ public class OfertasController {
             filtro.setSalarioMaximo(Campos.leerNumero(txtSalarioMax, "salario máximo"));
             filtro.setFechaDesde(dpDesde.getValue());
             filtro.setFechaHasta(dpHasta.getValue());
+
             List<Oferta> ofertas = Servicios.ofertas().buscar(filtro);
             tabla.getItems().setAll(ofertas);
             lblTotal.setText(ofertas.size() + " candidatura(s)");
@@ -123,6 +152,7 @@ public class OfertasController {
             Avisos.errorBD(e);
         }
     }
+
     @FXML
     private void limpiar() {
         txtTitulo.clear();
@@ -134,6 +164,7 @@ public class OfertasController {
         dpHasta.setValue(null);
         buscar();
     }
+
     private void cambiarEstado(Oferta oferta, Estado estado) {
         try {
             Servicios.ofertas().cambiarEstado(oferta.getId(), estado);
@@ -145,34 +176,38 @@ public class OfertasController {
         }
         tabla.refresh();
     }
+
     @FXML
     private void nueva() {
         FormularioOfertaController formulario = Navegador.abrirDialogo("formulario-oferta.fxml", "Nueva candidatura",
-        (FormularioOfertaController c) -> c.nueva());
+                (FormularioOfertaController c) -> c.nueva());
         if (formulario.isGuardado()) {
             buscar();
         }
     }
+
     @FXML
     private void editar() {
         int id = tabla.getSelectionModel().getSelectedItem().getId();
         FormularioOfertaController formulario = Navegador.abrirDialogo("formulario-oferta.fxml", "Editar candidatura",
-        (FormularioOfertaController c) -> c.editar(id));
+                (FormularioOfertaController c) -> c.editar(id));
         if (formulario.isGuardado()) {
             buscar();
         }
     }
+
     @FXML
     private void verDetalle() {
         int id = tabla.getSelectionModel().getSelectedItem().getId();
         DetalleOfertaController detalle = Navegador.mostrar("detalle-oferta.fxml");
         detalle.cargar(id);
     }
+
     @FXML
     private void borrar() {
         Oferta oferta = tabla.getSelectionModel().getSelectedItem();
-        String pregunta = "¿Borrar la candidatura «" + oferta.getTitulo() + "» de " +
-                oferta.getEmpresa().getNombre()
+        String pregunta = "¿Borrar la candidatura «" + oferta.getTitulo() + "» de "
+                + oferta.getEmpresa().getNombre()
                 + "?\nTambién se borrarán sus entrevistas.";
         if (!Avisos.confirmar(pregunta, "Borrar")) {
             return;
@@ -186,15 +221,18 @@ public class OfertasController {
             Avisos.errorBD(e);
         }
     }
+
     @FXML
     private void importar() {
         FileChooser selector = new FileChooser();
         selector.setTitle("Importar candidaturas");
         selector.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos CSV", "*.csv"));
+
         File carpetaDatos = new File("data");
         if (carpetaDatos.isDirectory()) {
             selector.setInitialDirectory(carpetaDatos);
         }
+
         File csv = selector.showOpenDialog(tabla.getScene().getWindow());
         if (csv == null) {
             return;
@@ -202,6 +240,7 @@ public class OfertasController {
         try {
             List<String> errores = new ArrayList<>();
             int importadas = Servicios.ofertas().importar(csv, errores);
+
             StringBuilder mensaje = new StringBuilder(importadas + " candidatura(s) importada(s).");
             for (String error : errores) {
                 mensaje.append("\nNo importada. ").append(error);
