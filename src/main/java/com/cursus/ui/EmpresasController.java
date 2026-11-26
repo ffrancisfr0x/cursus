@@ -60,7 +60,8 @@ public class EmpresasController {
         });
         cargar();
         nueva();
-    }private void cargar() {
+    }
+    private void cargar() {
         try {
             List<Empresa> empresas = Servicios.empresas().listar();
             tabla.getItems().setAll(empresas);
@@ -128,7 +129,8 @@ public class EmpresasController {
             Avisos.errorBD(e);
         }
     }
-    private void mensaje(String texto, boolean error) {lblMensaje.setText(texto);
+    private void mensaje(String texto, boolean error) {
+        lblMensaje.setText(texto);
         lblMensaje.getStyleClass().setAll("label", error ? "texto-error" : "texto-ok");
     }
 }
